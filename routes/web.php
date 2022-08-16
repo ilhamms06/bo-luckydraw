@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ScreenController;
+use App\Http\Controllers\WinnerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +22,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('login', [LoginController::class, 'index'])->name('login.index');
+
+// Route::middleware(['auth'])->group(function () {
+    Route::resource('project', ProjectController::class);
+    Route::resource('screen', ScreenController::class);
+    Route::resource('item', ItemController::class);
+    Route::resource('participant', ParticipantController::class);
+    Route::resource('winner', WinnerController::class);
+// });c
