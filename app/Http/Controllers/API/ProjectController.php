@@ -33,9 +33,14 @@ class ProjectController extends Controller
                 ->select('screens.*')
                 ->where('projects.unique_field', '=', $request->code)
                 ->get();
-            $data['message'] = 'Berhasil';
-            $data['status'] = 200;
-            $data['data'] = $project;
+            if (count($project) != 0) {
+                $data['message'] = 'Berhasil';
+                $data['status'] = 200;
+                $data['data'] = $project;
+            } else {
+                $data['message'] = 'Gagal';
+                $data['status'] = 400;
+            }
         } catch (\Exception $ex) {
             $data['message'] = $ex->getMessage();
             $data['status'] = 500;
