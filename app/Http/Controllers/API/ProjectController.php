@@ -32,7 +32,7 @@ class ProjectController extends Controller
                 ->join('screens', 'screens.project_id', '=', 'projects.id')
                 ->select('screens.*')
                 ->where('projects.unique_field', '=', $request->code)
-                ->first();
+                ->get();
             if ($project) {
                 $data['message'] = 'Berhasil';
                 $data['status'] = 200;
