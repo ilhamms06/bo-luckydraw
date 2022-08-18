@@ -15,7 +15,7 @@ class ScreenForm extends Form
                 'class' => 'App\Models\Project',
                 'property' => 'name',
                 'label' => 'Project',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control ']
             ])
             ->add('name', 'text')
             ->add('submit', 'submit', ['label'=>'Save', 'attr'=>['class'=>'btn btn-primary']]);

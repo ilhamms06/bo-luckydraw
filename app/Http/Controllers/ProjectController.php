@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -25,7 +29,6 @@ class ProjectController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            // $model = Project::where('user_id', Auth::user()->id)->get();
             $query = Project::query();
             return DataTables::of($query)
             ->addColumn('action','pages.'.$this->module.'._action')
@@ -41,15 +44,9 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create()
     {
-        $form = $formBuilder->create(\App\Forms\ProjectForm::class, [
-            'method' => 'POST',
-            'url' => route('project.store')
-        ]);
-        return view('pages.'.$this->module.'.create',[
-            'form' => $form
-        ]);
+        return view('pages.'.$this->module.'.create');
     }
 
     /**
@@ -58,26 +55,29 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
         try {
             DB::transaction(function () use ($request) {
-                $blog = [
+                $code = random_int(100000, 999999);
+                $project = [
                     'user_id' => 1,
                     'name' => $request->name,
-                    // 'background' => $request->file('background')->store('background'),
-                    'unique_field' => $request->unique_field,
+                    'unique_field' => $code,
                 ];
-                if ($request->file('background')) {
-                    $blog['background'] = $request->file('background')->store('background-img');
+                if ($project) {
+                    $files = $request->file('background');
+                    if ($request->hasFile('background')) {
+                            $name = $files->hashName();
+                            $project['background'] = $files->storeAs('public/background', $name);
+                    }
                 }
-                // dd($blog);
-                Project::create($blog);
-                return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
+                Project::create($project);
             });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');
         } catch (\Exception $th) {
-        //    $this->logger->error($th);
-            return redirect()->route($this->module . '.index')->with('error','Data berhasil ditambahkan');;
+            $message = $th->getMessage();
+            return redirect()->route($this->module . '.index')->with('error',$message);
 
         }
     }
@@ -90,7 +90,10 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //
+        $project = Project::find($id);
+        return view('pages.' .$this->module . '.view',[
+            'model' => $project
+        ]);
     }
 
     /**
@@ -101,7 +104,10 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        //
+        $project = Project::find($id);
+        return view('pages.' .$this->module . '.update',[
+            'model' => $project
+        ]);
     }
 
     /**
@@ -113,7 +119,30 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $code = random_int(100000, 999999);
+                $project = [
+                    'user_id' => 1,
+                    'name' => $request->name,
+                    'unique_field' => $code,
+                ];
+                if ($project) {
+                    $files = $request->file('background');
+                    if ($request->hasFile('background')) {
+                            $name = $files->hashName();
+                            $project['background'] = $files->storeAs('public/background', $name);
+                    }
+                }
+                $model = Project::findOrFail($id);
+                $model->update($project);
+            });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil diupdate');
+        } catch (\Exception $th) {
+            $message = $th->getMessage();
+            return redirect()->route($this->module . '.index')->with('error',$message);
+
+        }
     }
 
     /**
@@ -124,6 +153,18 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id) {
+                $model = Project::find($id);
+                if(File::exists(public_path(Storage::url($model->background)))){
+                    File::delete(public_path(Storage::url($model->background)));
+                }
+                $model->delete($id);
+            });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil dihapus');;
+        } catch (\Exception $ex) {
+            $data['message'] = $ex->getMessage();
+            $status = 500;
+        }
     }
 }

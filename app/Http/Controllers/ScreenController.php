@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ScreenRequest;
 use App\Models\Screen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,11 @@ class ScreenController extends Controller
             return DataTables::of($query)
             ->addColumn('action','pages.'. $this->module.'._action')
             ->editColumn('project_id', function ($query) {
-                return $query->project->name;
+                if (isset($query->project->name)) {
+                    return $query->project->name;
+                }else{
+                    return "Not Found";
+                }
             })
             ->addIndexColumn()
             ->make();
@@ -59,20 +64,19 @@ class ScreenController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ScreenRequest $request)
     {
         try {
             DB::transaction(function () use ($request) {
-                $data = [
+                $screen = [
                     'project_id' => $request->project_id,
                     'name' => $request->name,
                 ];
-                Screen::create($data);
+                Screen::create($screen);
                 return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
             });
         } catch (\Exception $th) {
-        //    $this->logger->error($th);
-            return redirect()->route($this->module . '.index')->with('error','Data berhasil ditambahkan');;
+            return redirect()->route($this->module . '.index')->with('error',$th->getMessage());;
 
         }
     }
@@ -85,7 +89,10 @@ class ScreenController extends Controller
      */
     public function show($id)
     {
-        //
+        $screen = Screen::find($id);
+        return view('pages.' .$this->module . '.view',[
+            'model' => $screen
+        ]);
     }
 
     /**
@@ -94,9 +101,18 @@ class ScreenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(FormBuilder $formBuilder,$id)
     {
-        //
+        $screen = Screen::find($id);
+        $form = $formBuilder->create(\App\Forms\ScreenForm::class, [
+            'method' => 'PUT',
+            'url' => route('screen.update',$id),
+            'model' => $screen,
+        ]);
+        // $data['detail'] = $screen;
+        return view('pages.' .$this->module . '.create',[
+            'form' => $form
+        ]);
     }
 
     /**
@@ -108,7 +124,21 @@ class ScreenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $screen = [
+                    'project_id' => $request->project_id,
+                    'name' => $request->name,
+                ];
+                $model = Screen::findOrFail($id);
+                $model->update($screen);
+            });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil diupdate');
+        } catch (\Exception $th) {
+            $message = $th->getMessage();
+            return redirect()->route($this->module . '.index')->with('error',$message);
+
+        }
     }
 
     /**
@@ -119,6 +149,15 @@ class ScreenController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id) {
+                $model = Screen::find($id);
+                $model->delete($id);
+            });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil dihapus');;
+        } catch (\Exception $ex) {
+            $data['message'] = $ex->getMessage();
+            $status = 500;
+        }
     }
 }
