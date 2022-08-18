@@ -33,7 +33,7 @@ class ProjectController extends Controller
                 ->select('screens.*')
                 ->where('projects.unique_field', '=', $request->code)
                 ->first();
-            if (count($project) != 0) {
+            if ($project) {
                 $data['message'] = 'Berhasil';
                 $data['status'] = 200;
                 $data['data'] = $project;
