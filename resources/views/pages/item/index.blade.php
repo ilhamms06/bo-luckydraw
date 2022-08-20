@@ -45,7 +45,6 @@
                       <th>#</th>
                       <th>Screen</th>
                       <th>Name</th>
-                      <th>Image</th>
                       <th>Total Draw</th>
                       <th>Limit per Draw</th>
                       <th>Action</th>
@@ -82,7 +81,6 @@
             },
             {data: 'screen_id', name: 'screen_id'},
             {data: 'name', name: 'name'},
-            {data: 'image', name: 'image'},
             {data: 'total_draw', name: 'total_draw'},
             {data: 'limit_per_draw', name: 'limit_per_draw'},
             {data: 'action', name: 'action', orderable: false, searchable: false},

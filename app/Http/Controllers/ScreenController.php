@@ -73,8 +73,8 @@ class ScreenController extends Controller
                     'name' => $request->name,
                 ];
                 Screen::create($screen);
-                return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
             });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
         } catch (\Exception $th) {
             return redirect()->route($this->module . '.index')->with('error',$th->getMessage());;
 
@@ -109,7 +109,6 @@ class ScreenController extends Controller
             'url' => route('screen.update',$id),
             'model' => $screen,
         ]);
-        // $data['detail'] = $screen;
         return view('pages.' .$this->module . '.create',[
             'form' => $form
         ]);
