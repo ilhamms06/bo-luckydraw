@@ -69,7 +69,7 @@ class ProjectController extends Controller
                     $files = $request->file('background');
                     if ($request->hasFile('background')) {
                             $name = $files->hashName();
-                            $project['background'] = $files->storeAs('public/background', $name);
+                            $project['background'] = $files->storeAs('background', $name);
                     }
                 }
                 Project::create($project);
@@ -131,7 +131,7 @@ class ProjectController extends Controller
                     $files = $request->file('background');
                     if ($request->hasFile('background')) {
                             $name = $files->hashName();
-                            $project['background'] = $files->storeAs('public/background', $name);
+                            $project['background'] = $files->storeAs('background', $name);
                     }
                 }
                 $model = Project::findOrFail($id);

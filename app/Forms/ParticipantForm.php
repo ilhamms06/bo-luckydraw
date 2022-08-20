@@ -9,7 +9,6 @@ class ParticipantForm extends Form
     public function buildForm()
     {
         $this
-            // ->add('project_id', 'select')
             ->add('project_id', 'entity',[
                 'empty_value' => 'Pilih Project',
                 'class' => 'App\Models\Project',
@@ -30,7 +29,8 @@ class ParticipantForm extends Form
                 'property' => 'name',
                 'label' => 'Item',
                 'attr' => ['class' => 'form-control ']
-            ])            ->add('code', 'text')
+            ])            
+            ->add('code', 'text')
             ->add('name', 'text')
             ->add('email', 'text')
             ->add('phone', 'text')

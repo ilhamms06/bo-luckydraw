@@ -84,7 +84,7 @@ class ItemController extends Controller
                     $files = $request->file('image');
                     if ($request->hasFile('image')) {
                         $name = $files->hashName();
-                        $data['image'] = $files->storeAs('public/image', $name);
+                        $data['image'] = $files->storeAs('image', $name);
                     }
                 }
                 Item::create($data);
@@ -148,7 +148,7 @@ class ItemController extends Controller
                     $files = $request->file('image');
                     if ($request->hasFile('image')) {
                             $name = $files->hashName();
-                            $item['image'] = $files->storeAs('public/image', $name);
+                            $item['image'] = $files->storeAs('image', $name);
                     }
                 }
                 $model = Item::findOrFail($id);

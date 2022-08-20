@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ParticipantRequest;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,13 +30,25 @@ class ParticipantController extends Controller
             return DataTables::of($query)
             ->addColumn('action','pages.'. $this->module.'._action')
             ->editColumn('project_id', function ($query) {
-                return $query->project->name;
+                if (isset($query->project->name)) {
+                    return $query->project->name;
+                }else{
+                    return "Not Found";
+                }
             })
             ->editColumn('screen_id', function ($query) {
-                return $query->screen->name;
+                if (isset($query->screen->name)) {
+                    return $query->screen->name;
+                }else{
+                    return "Not Found";
+                }
             })
             ->editColumn('item_id', function ($query) {
-                return $query->item->name;
+                if (isset($query->item->name)) {
+                    return $query->item->name;
+                }else{
+                    return "Not Found";
+                }
             })
             ->addIndexColumn()
             ->make();
@@ -82,11 +95,11 @@ class ParticipantController extends Controller
                     'province' => $request->province,
                     'city' => $request->city,
                 ];
-                Participant::create($data);
-                return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
+                 Participant::create($data);
             });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
         } catch (\Exception $th) {
-            return redirect()->route($this->module . '.index')->with('error','Data berhasil ditambahkan');;
+            return redirect()->route($this->module . '.index')->with('error','Data Gagal ditambahkan');;
         }
     }
 
@@ -132,6 +145,15 @@ class ParticipantController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id) {
+                $model = Participant::find($id);
+                $model->delete($id);
+            });
+            return redirect()->route($this->module . '.index')->with('success','Data berhasil dihapus');;
+        } catch (\Exception $ex) {
+            $data['message'] = $ex->getMessage();
+            $status = 500;
+        }
     }
 }
