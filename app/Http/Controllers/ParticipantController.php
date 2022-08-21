@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ParticipantRequest;
+use App\Models\Item;
 use App\Models\Participant;
+use App\Models\Project;
+use App\Models\Screen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class ParticipantController extends Controller
 {
@@ -62,15 +66,12 @@ class ParticipantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create()
     {
-        $form = $formBuilder->create(\App\Forms\ParticipantForm::class, [
-            'method' => 'POST',
-            'url' => route('participant.store')
-        ]);
-        return view('pages.'.$this->module.'.create',[
-            'form' => $form
-        ]);
+        $data['project'] = Project::all();
+        $data['items'] = Item::all();
+        $data['screen'] = Screen::all();
+        return view('pages.'.$this->module.'.create', $data);
     }
 
     /**
@@ -79,15 +80,16 @@ class ParticipantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ParticipantRequest $request)
     {
         try {
             DB::transaction(function () use ($request) {
+                $code = strtoupper(Str::random(6));
                 $data = [
                     'project_id' => $request->project_id,
                     'screen_id' => $request->screen_id,
                     'item_id' => $request->item_id,
-                    'code' => $request->code,
+                    'code' => $code,
                     'name' => $request->name,
                     'email' => $request->email,
                     'phone' => $request->phone,
@@ -95,7 +97,7 @@ class ParticipantController extends Controller
                     'province' => $request->province,
                     'city' => $request->city,
                 ];
-                 Participant::create($data);
+                Participant::create($data);
             });
             return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');;
         } catch (\Exception $th) {
@@ -111,7 +113,10 @@ class ParticipantController extends Controller
      */
     public function show($id)
     {
-        //
+        $participant = Participant::find($id);
+        return view('pages.' .$this->module . '.view',[
+            'model' => $participant
+        ]);
     }
 
     /**
@@ -156,4 +161,36 @@ class ParticipantController extends Controller
             $status = 500;
         }
     }
+
+
+
+    public function getScreen($id)
+    {   
+        $model = DB::table('items')
+        ->join('screens','items.screen_id', '=', 'screens.id') 
+        ->where('screens.project_id', '=', $id)
+        ->get();
+
+        // $model = Item::has where('screen.project_id', $id)->get();
+        $output = '';
+        $output .= '<select class="form-control" id="screen_id" name="screen_id"><option value="">-- Select Screen --</option>';
+        foreach ($model as $row) {
+            $output .= '<option value="' . $row->id . '"> ' . $row->name . '</option>';
+        }
+        $output .= '</select>';
+        echo $output;
+    }
+
+    public function getItem($id)
+    {
+        $model = Item::where('screen_id', $id)->get();
+        $output = '';
+        $output .= '<select class="form-control" id="item_id" name="item_id"><option value="">-- Select Item --</option>';
+        foreach ($model as $row) {
+            $output .= '<option value="' . $row->id . '"> ' . $row->name . '</option>';
+        }
+        $output .= '</select>';
+        echo $output;
+    }
+    
 }

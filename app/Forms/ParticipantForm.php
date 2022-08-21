@@ -30,7 +30,7 @@ class ParticipantForm extends Form
                 'label' => 'Item',
                 'attr' => ['class' => 'form-control ']
             ])            
-            ->add('code', 'text')
+            // ->add('code', 'text')
             ->add('name', 'text')
             ->add('email', 'text')
             ->add('phone', 'text')
