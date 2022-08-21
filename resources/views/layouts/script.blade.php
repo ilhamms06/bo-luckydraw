@@ -16,4 +16,7 @@
 <script src="{{ asset('stisla') }}/assets/js/page/index-0.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.19/sweetalert2.all.min.js"
+    integrity="sha512-o/FohCnw63hew8nW4BnBfJaTjvc50EA/Uq5hDtm25VRdQGYDgsr72IGks8Ji9evnFfQjBd9S89CWlJh4+gYlEw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {{-- <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script> --}}

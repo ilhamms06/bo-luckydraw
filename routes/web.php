@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ScreenController;
 use App\Http\Controllers\WinnerController;
+use App\Models\Pricing;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,16 +22,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('login', [LoginController::class, 'index'])->name('login.index');
-
-// Route::middleware(['auth'])->group(function () {
+Route::post('login', [LoginController::class, 'login'])->name('login');
+Route::get('register', [RegisterController::class, 'index'])->name('register.index');
+Route::post('register', [RegisterController::class, 'register'])->name('register');
+Route::middleware(['auth'])->group(function () {
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/', function () {
+        return view('welcome',[
+            'pricing' => Pricing::all()
+        ]);
+    });
     Route::resource('project', ProjectController::class);
     Route::resource('screen', ScreenController::class);
     Route::resource('item', ItemController::class);
     Route::resource('participant', ParticipantController::class);
     Route::resource('winner', WinnerController::class);
-// });c
+});
+
+Route::get('getScreen/{id}', [ParticipantController::class, 'getScreen'])->name('getScreen');
+Route::get('getItem/{id}', [ParticipantController::class, 'getItem'])->name('getItem');
+

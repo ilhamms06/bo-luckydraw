@@ -11,7 +11,7 @@
       <div class="dropdown-menu dropdown-menu-right">
         <div class="dropdown-divider"></div>
         
-        <form action="/logout" method="post">
+        <form action="{{ route('logout') }}" method="post">
           @csrf
           <button type="submit" class="dropdown-item has-icon text-danger">
             <i class="fas fa-sign-out-alt"></i> Logout
