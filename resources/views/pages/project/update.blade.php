@@ -14,6 +14,28 @@
             <label for="name">name</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ $model->name }}">
           </div>
+
+          <div class="form-group">
+            <label class="form-label">Spinner Type</label>
+            <div class="row gutters-sm">
+              <div class="col-6 col-sm-6">
+                <label class="imagecheck mb-4">
+                  <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-1.gif') }}" class="imagecheck-input" {{ $model->sprint_type == 'http://luckydraw.herudwicahya.com/gif/spinner-1.gif' ? 'checked' : '' }}>
+                  <figure class="imagecheck-figure">
+                    <img src="{{ asset('gif/spinner-1.gif') }}" alt="}" class="imagecheck-image">
+                  </figure>
+                </label>
+              </div>
+              <div class="col-6 col-sm-6">
+                <label class="imagecheck mb-4">
+                  <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-2.gif') }}" class="imagecheck-input" {{ $model->sprint_type == 'http://luckydraw.herudwicahya.com/gif/spinner-2.gif' ? 'checked' : '' }}>
+                  <figure class="imagecheck-figure">
+                    <img src="{{ asset('gif/spinner-2.gif') }}" alt="}" class="imagecheck-image">
+                  </figure>
+                </label>
+              </div>
+            </div>
+          </div>
           <div class="form-group">
             <label for="background">File</label>
             @if ($model->background)

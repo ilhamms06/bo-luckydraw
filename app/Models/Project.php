@@ -12,6 +12,7 @@ class Project extends BaseModel
     protected $fillable = [
         'user_id',
         'name',
+        'sprint_type',
         'background',
         'unique_field',
     ];

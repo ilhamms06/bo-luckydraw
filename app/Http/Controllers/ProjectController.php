@@ -61,7 +61,8 @@ class ProjectController extends Controller
             DB::transaction(function () use ($request) {
                 $code = random_int(100000, 999999);
                 $project = [
-                    'user_id' => 1,
+                    'user_id' => Auth::user()->id,
+                    'sprint_type' => $request->sprint_type,
                     'name' => $request->name,
                     'unique_field' => $code,
                 ];

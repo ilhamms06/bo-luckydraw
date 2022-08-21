@@ -19,6 +19,29 @@
           @enderror
         </div>
 
+        
+        <div class="form-group">
+          <label class="form-label">Spinner Type</label>
+          <div class="row gutters-sm">
+            <div class="col-6 col-sm-6">
+              <label class="imagecheck mb-4">
+                <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-1.gif') }}" class="imagecheck-input">
+                <figure class="imagecheck-figure">
+                  <img src="{{ asset('gif/spinner-1.gif') }}" alt="}" class="imagecheck-image">
+                </figure>
+              </label>
+            </div>
+            <div class="col-6 col-sm-6">
+              <label class="imagecheck mb-4">
+                <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-2.gif') }}" class="imagecheck-input">
+                <figure class="imagecheck-figure">
+                  <img src="{{ asset('gif/spinner-2.gif') }}" alt="}" class="imagecheck-image">
+                </figure>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="background">File</label>
           <img class="img-preview d-block w-100 mb-3 col-sm-5">
