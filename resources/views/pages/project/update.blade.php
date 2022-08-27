@@ -39,7 +39,7 @@
           <div class="form-group">
             <label for="background">File</label>
             @if ($model->background)
-            <img src="{{ Storage::url($model->background)}}" class="img-preview d-block w-100 mb-3 col-sm-5">
+            <img src="{{  asset('background/' . $model->background)}}" class="img-preview d-block w-100 mb-3 col-sm-5">
             @endif
             <input type="file" class="form-control @error('background') is-invalid @enderror" id="background" name="background" onchange="previewImg()" value="{{  $model->background }}">
             @error('background')

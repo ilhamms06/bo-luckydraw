@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\Project;
 use App\Models\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Kris\LaravelFormBuilder\FormBuilder;
@@ -30,7 +31,9 @@ class ParticipantController extends Controller
     {
         if (request()->ajax()) {
             // $model = Project::where('user_id', Auth::user()->id)->get();
-            $query = Participant::query();
+            $query = Participant::query()->whereHas('project', function($q){
+                $q->where('user_id', Auth::user()->id);
+            });
             return DataTables::of($query)
             ->addColumn('action','pages.'. $this->module.'._action')
             ->editColumn('project_id', function ($query) {
@@ -68,7 +71,7 @@ class ParticipantController extends Controller
      */
     public function create()
     {
-        $data['project'] = Project::all();
+        $data['project'] = Project::where('user_id', Auth::user()->id)->get();
         $data['items'] = Item::all();
         $data['screen'] = Screen::all();
         return view('pages.'.$this->module.'.create', $data);
@@ -170,8 +173,6 @@ class ParticipantController extends Controller
         ->join('screens','items.screen_id', '=', 'screens.id') 
         ->where('screens.project_id', '=', $id)
         ->get();
-
-        // $model = Item::has where('screen.project_id', $id)->get();
         $output = '';
         $output .= '<select class="form-control" id="screen_id" name="screen_id"><option value="">-- Select Screen --</option>';
         foreach ($model as $row) {

@@ -15,7 +15,7 @@
             </tr> 
             <tr>
                 <th>Image</th>
-                <td><img src="{{ Storage::url($model->background) }}"></td>
+                <td><img src="{{  asset('background/' . $model->background)}}"></td>
             </tr>  
         </tbody>
     </table>

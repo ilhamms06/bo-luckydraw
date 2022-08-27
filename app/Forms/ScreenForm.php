@@ -2,6 +2,8 @@
 
 namespace App\Forms;
 
+use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 use Kris\LaravelFormBuilder\Form;
 
 class ScreenForm extends Form
@@ -14,6 +16,9 @@ class ScreenForm extends Form
                 'empty_value' => 'Pilih Project',
                 'class' => 'App\Models\Project',
                 'property' => 'name',
+                'query_builder' => function (Project $lang) {
+                    return $lang->where('user_id', Auth::user()->id);
+                },
                 'label' => 'Project',
                 'attr' => ['class' => 'form-control ']
             ])

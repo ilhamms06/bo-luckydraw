@@ -39,7 +39,7 @@
       <div class="form-group">
         <label for="item_id">Item</label>
         <select class="form-control @error('item_id') is-invalid @enderror" id="item_id" name="item_id">
-            <option value="" disabled selected>-- select item --</option>
+            <option value="">-- select item --</option>
         </select>
         <span id="result1"></span>
         <div id="result_tunggu1"></div>
@@ -115,7 +115,6 @@
 <script type="text/javascript">
   $("#project").on('change', function () {
         var selectedValue = $(this).val();
-        // console.log(selectedValue);
         $.ajax({
             url: '/getScreen/' + selectedValue,
             type: 'GET',

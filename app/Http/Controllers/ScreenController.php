@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ScreenRequest;
 use App\Models\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Kris\LaravelFormBuilder\FormBuilder;
@@ -25,7 +26,9 @@ class ScreenController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Screen::query();
+            $query = Screen::query()->whereHas('project', function($q){
+                $q->where('user_id', Auth::user()->id);
+            });
             return DataTables::of($query)
             ->addColumn('action','pages.'. $this->module.'._action')
             ->editColumn('project_id', function ($query) {

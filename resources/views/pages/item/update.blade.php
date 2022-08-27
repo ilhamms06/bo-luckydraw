@@ -40,7 +40,7 @@
           <div class="form-group">
             <label for="image">File</label>
             @if ($model->image)
-            <img src="{{ Storage::url($model->image)}}" class="img-preview d-block w-100 mb-3 col-sm-5">
+            <img src="{{  asset('image/' . $model->image)}}" class="img-preview d-block w-100 mb-3 col-sm-5">
             @endif
             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" onchange="previewImg()" value="{{  $model->image }}">
             @error('image')

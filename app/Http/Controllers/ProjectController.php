@@ -29,7 +29,7 @@ class ProjectController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Project::query();
+            $query = Project::query()->where('user_id', Auth::user()->id);
             return DataTables::of($query)
             ->addColumn('action','pages.'.$this->module.'._action')
             ->addIndexColumn()
@@ -66,13 +66,14 @@ class ProjectController extends Controller
                     'name' => $request->name,
                     'unique_field' => $code,
                 ];
-                if ($project) {
-                    $files = $request->file('background');
-                    if ($request->hasFile('background')) {
-                            $name = $files->hashName();
-                            $project['background'] = $files->storeAs('background', $name);
-                    }
+                if ($request->hasFile('background')) {
+                    $file = $request->file('background');
+                    $name = time().'.'.$file->extension();
+                    $destinationPath = public_path('background');
+                    $file->move($destinationPath, $name);
+                    $project['background'] = $name;
                 }
+
                 Project::create($project);
             });
             return redirect()->route($this->module . '.index')->with('success','Data berhasil ditambahkan');
@@ -122,20 +123,19 @@ class ProjectController extends Controller
     {
         try {
             DB::transaction(function () use ($request, $id) {
-                $code = random_int(100000, 999999);
-                $project = [
-                    'user_id' => 1,
-                    'name' => $request->name,
-                    'unique_field' => $code,
-                ];
-                if ($project) {
-                    $files = $request->file('background');
-                    if ($request->hasFile('background')) {
-                            $name = $files->hashName();
-                            $project['background'] = $files->storeAs('background', $name);
-                    }
-                }
                 $model = Project::findOrFail($id);
+                $project = [
+                    'user_id' => Auth::user()->id,
+                    'name' => $request->name,
+                    'unique_field' => $model->unique_field,
+                ];
+                if ($request->hasFile('background')) {
+                    $file = $request->file('background');
+                    $name = time().'.'.$file->extension();
+                    $destinationPath = public_path('background');
+                    $file->move($destinationPath, $name);
+                    $project['background'] = $name;
+                }
                 $model->update($project);
             });
             return redirect()->route($this->module . '.index')->with('success','Data berhasil diupdate');

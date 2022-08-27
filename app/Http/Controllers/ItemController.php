@@ -6,6 +6,7 @@ use App\Http\Requests\ItemRequest;
 use App\Models\Item;
 use App\Models\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,9 @@ class ItemController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Item::query();
+            $query = Item::query()->whereHas('screen.project', function($q){
+                $q->where('user_id', Auth::user()->id);
+            });
             return DataTables::of($query)
             ->addColumn('action','pages.'.$this->module.'._action')
             ->editColumn('screen_id', function ($query) {
@@ -50,15 +53,12 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create()
     {
-        $form = $formBuilder->create(\App\Forms\ItemForm::class, [
-            'method' => 'POST',
-            'url' => route('item.store')
-        ]);
-        $screen = Screen::all();
+        $screen = Screen::whereHas('project', function($q){
+            $q->where('user_id', Auth::user()->id);
+        })->get();
         return view('pages.'.$this->module.'.create',[
-            'form' => $form,
             'screen' => $screen
         ]);
     }
@@ -80,12 +80,12 @@ class ItemController extends Controller
                     'total_draw' => (int)$request->total_draw,
                     'limit_per_draw' => (int)$request->limit_per_draw,
                 ];
-                if ($data) {
-                    $files = $request->file('image');
-                    if ($request->hasFile('image')) {
-                        $name = $files->hashName();
-                        $data['image'] = $files->storeAs('image', $name);
-                    }
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $name = time().'.'.$file->extension();
+                    $destinationPath = public_path('image');
+                    $file->move($destinationPath, $name);
+                    $data['image'] = $name;
                 }
                 Item::create($data);
             });
@@ -144,12 +144,12 @@ class ItemController extends Controller
                     'total_draw' => $request->total_draw,
                     'limit_per_draw' => $request->limit_per_draw,
                 ];
-                if ($item) {
-                    $files = $request->file('image');
-                    if ($request->hasFile('image')) {
-                            $name = $files->hashName();
-                            $item['image'] = $files->storeAs('image', $name);
-                    }
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $name = time().'.'.$file->extension();
+                    $destinationPath = public_path('image');
+                    $file->move($destinationPath, $name);
+                    $data['image'] = $name;
                 }
                 $model = Item::findOrFail($id);
                 $model->update($item);

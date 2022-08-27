@@ -19,7 +19,7 @@
           </tr>
           <tr>
               <th>Image</th>
-              <td><img src="{{ Storage::url($model->image) }}"></td>
+              <td><img src="{{  asset('image/' . $model->image)}}"></td>
           </tr>
           <tr>
             <th>Total Draw</th>
