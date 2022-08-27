@@ -22,7 +22,7 @@
                 <label class="imagecheck mb-4">
                   <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-1.gif') }}" class="imagecheck-input" {{ $model->sprint_type == 'http://luckydraw.herudwicahya.com/gif/spinner-1.gif' ? 'checked' : '' }}>
                   <figure class="imagecheck-figure">
-                    <img src="{{ asset('gif/spinner-1.gif') }}" alt="}" class="imagecheck-image">
+                    <img src="{{ asset('gif/spinner-1.gif') }}" alt="}" class="imagecheck-image" width="250" height="250">
                   </figure>
                 </label>
               </div>
@@ -30,7 +30,7 @@
                 <label class="imagecheck mb-4">
                   <input name="sprint_type" type="radio" value="{{ asset('gif/spinner-2.gif') }}" class="imagecheck-input" {{ $model->sprint_type == 'http://luckydraw.herudwicahya.com/gif/spinner-2.gif' ? 'checked' : '' }}>
                   <figure class="imagecheck-figure">
-                    <img src="{{ asset('gif/spinner-2.gif') }}" alt="}" class="imagecheck-image">
+                    <img src="{{ asset('gif/spinner-2.gif') }}" alt="}" class="imagecheck-image" width="250" height="250">
                   </figure>
                 </label>
               </div>
